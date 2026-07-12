@@ -86,6 +86,37 @@ def scale_features(
     X_test_scaled = scaler.transform(X_test)
     return X_train_scaled, X_test_scaled, scaler
 
+def create_dataloaders(
+    X_train: np.ndarray,
+    X_test: np.ndarray,
+    y_train: np.ndarray,
+    y_test: np.ndarray,
+    batch_size: int = config.BATCH_SIZE,
+) -> Tuple[DataLoader, DataLoader]:
+    
+    X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
+    X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
+    y_train_tensor = torch.tensor(y_train, dtype=torch.float32).unsqueeze(1)
+    y_test_tensor = torch.tensor(y_test, dtype=torch.float32).unsqueeze(1)
+
+    train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+    test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
+
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=0,  # CPU-safe on Windows
+    )
+    test_loader = DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=0,
+    )
+
+    return train_loader, test_loader
+
 def preprocess_pipeline(
     csv_path: Path | None = None,
     
