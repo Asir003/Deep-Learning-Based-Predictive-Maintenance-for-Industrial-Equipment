@@ -39,3 +39,32 @@ def load_dataset(csv_path: Path | None = None) -> pd.DataFrame:
     df = pd.read_csv(path)
     return df
 
+def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
+    
+    data = df.copy()
+
+    # Drop columns that are not predictive features
+    existing_drop_cols = [col for col in config.COLUMNS_TO_DROP if col in data.columns]
+    data = data.drop(columns=existing_drop_cols)
+
+    # Check for missing values and report
+    missing_count = data.isnull().sum().sum()
+    if missing_count > 0:
+        print(f"Warning: Found {missing_count} missing values. Dropping rows.")
+        data = data.dropna()
+    else:
+        print("No missing values detected.")
+
+    return data
+
+def preprocess_pipeline(
+    csv_path: Path | None = None,
+    
+) -> PreprocessedData:
+   
+    # Load and clean
+    raw_df = load_dataset(csv_path)
+    print(f"Loaded dataset with {len(raw_df)} rows and {len(raw_df.columns)} columns.")
+
+    cleaned_df = clean_dataset(raw_df)
+    
