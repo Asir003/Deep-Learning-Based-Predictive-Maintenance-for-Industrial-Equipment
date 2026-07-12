@@ -57,6 +57,14 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
 
     return data
 
+def encode_product_type(df: pd.DataFrame) -> Tuple[pd.DataFrame, LabelEncoder]:
+    
+    data = df.copy()
+    encoder = LabelEncoder()
+    data[config.TYPE_COLUMN] = encoder.fit_transform(data[config.TYPE_COLUMN])
+    return data, encoder
+
+
 def preprocess_pipeline(
     csv_path: Path | None = None,
     
@@ -67,4 +75,7 @@ def preprocess_pipeline(
     print(f"Loaded dataset with {len(raw_df)} rows and {len(raw_df.columns)} columns.")
 
     cleaned_df = clean_dataset(raw_df)
+    encoded_df, type_encoder = encode_product_type(cleaned_df)
+
+
     
