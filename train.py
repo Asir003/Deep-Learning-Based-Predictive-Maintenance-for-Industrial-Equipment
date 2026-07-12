@@ -56,3 +56,42 @@ def main() -> None:
         print(f"Model parameters: {total_params:,}")
         print()
 
+        # 3. Training loop with early stopping
+        print("Step 3: Training...")
+        print("-" * 80)
+        print(
+            f"{'Epoch':>6} | {'Train Loss':>12} | {'Val Loss':>12} | "
+            f"{'Train Acc':>12} | {'Val Acc':>12}"
+        )
+        print("-" * 80)
+
+        history = TrainingHistory()
+        early_stopping = EarlyStopping(patience=config.EARLY_STOPPING_PATIENCE)
+
+        for epoch in range(1, config.NUM_EPOCHS + 1):
+            train_loss, train_acc = train_one_epoch(
+                model, data.train_loader, criterion, optimizer
+            )
+            val_loss, val_acc = validate_one_epoch(
+                model, data.test_loader, criterion
+            )
+
+            history.train_losses.append(train_loss)
+            history.val_losses.append(val_loss)
+            history.train_accuracies.append(train_acc)
+            history.val_accuracies.append(val_acc)
+
+            print(
+                f"{epoch:>6} | {train_loss:>12.4f} | {val_loss:>12.4f} | "
+                f"{train_acc:>12.4f} | {val_acc:>12.4f}"
+            )
+
+            # Early stopping check
+            if early_stopping(val_loss, model):
+                print(f"\nEarly stopping triggered at epoch {epoch}.")
+                break
+
+        print("-" * 80)
+        print()
+
+
