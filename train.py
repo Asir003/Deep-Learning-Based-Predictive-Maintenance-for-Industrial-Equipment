@@ -94,4 +94,30 @@ def main() -> None:
         print("-" * 80)
         print()
 
+        if early_stopping.best_state_dict is not None:
+            model.load_state_dict(early_stopping.best_state_dict)
+            print(f"Restored best model (val loss: {early_stopping.best_loss:.4f}).")
+
+        # ------------------------------------------------------------------
+        # 4. Save model and training curves
+        # ------------------------------------------------------------------
+        print("\nStep 4: Saving model and plots...")
+        save_model(model, data.input_size)
+        plot_training_curves(history)
+
+        print("\nTraining completed successfully!")
+        print(f"Best model saved to: {config.MODEL_PATH}")
+        print(f"Plots saved to: {config.PLOTS_DIR}")
+
+    except FileNotFoundError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Unexpected error during training: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
+
 
