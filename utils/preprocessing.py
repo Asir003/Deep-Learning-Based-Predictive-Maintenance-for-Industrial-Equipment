@@ -119,6 +119,9 @@ def create_dataloaders(
 
 def preprocess_pipeline(
     csv_path: Path | None = None,
+    test_size: float = config.TEST_SIZE,
+    random_seed: int = config.RANDOM_SEED,
+    batch_size: int = config.BATCH_SIZE,
     
 ) -> PreprocessedData:
    
@@ -144,6 +147,25 @@ def preprocess_pipeline(
 
     # Scale features
     X_train_scaled, X_test_scaled, scaler = scale_features(X_train, X_test)
+
+    # Create DataLoaders
+    train_loader, test_loader = create_dataloaders(
+        X_train_scaled, X_test_scaled, y_train, y_test, batch_size
+    )
+
+    return PreprocessedData(
+        train_loader=train_loader,
+        test_loader=test_loader,
+        X_train=X_train_scaled,
+        X_test=X_test_scaled,
+        y_train=y_train,
+        y_test=y_test,
+        input_size=X_train_scaled.shape[1],
+        feature_names=feature_names,
+        scaler=scaler,
+        type_encoder=type_encoder,
+    )
+
 
 
 
