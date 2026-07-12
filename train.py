@@ -34,11 +34,25 @@ def main() -> None:
     try:
         set_seed()
 
-        # ------------------------------------------------------------------
-        # 1. Preprocess data
-        # ------------------------------------------------------------------
+        
         print("Step 1: Loading and preprocessing data...")
         data = preprocess_pipeline()
         print(f"Input features: {data.input_size}")
         print(f"Feature names: {data.feature_names}")
         print()
+
+        print("Step 2: Building model...")
+        model = PredictiveMaintenanceNet(
+            input_size=data.input_size,
+            hidden_layers=config.HIDDEN_LAYERS,
+            dropout_rate=config.DROPOUT_RATE,
+        )
+        model.to(config.DEVICE)
+
+        criterion = nn.BCELoss()
+        optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE)
+
+        total_params = sum(p.numel() for p in model.parameters())
+        print(f"Model parameters: {total_params:,}")
+        print()
+
