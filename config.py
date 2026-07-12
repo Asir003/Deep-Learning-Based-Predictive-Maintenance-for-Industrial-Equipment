@@ -25,6 +25,15 @@ NUMERIC_FEATURES: list[str] = [
 ]
 
 # Training hyperparameters
+RANDOM_SEED: int = 42
+TEST_SIZE: float = 0.20
+BATCH_SIZE: int = 64
+LEARNING_RATE: float = 0.001
+NUM_EPOCHS: int = 50
+DROPOUT_RATE: float = 0.3
+EARLY_STOPPING_PATIENCE: int = 10
+
+HIDDEN_LAYERS: list[int] = [128, 64, 32]
 
 # Device configuration
 DEVICE: str = "cpu"
