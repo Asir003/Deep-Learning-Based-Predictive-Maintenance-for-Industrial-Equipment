@@ -76,6 +76,16 @@ def prepare_features_and_target(
     y = df[config.TARGET_COLUMN]
     return X, y, feature_names
 
+def scale_features(
+    X_train: np.ndarray,
+    X_test: np.ndarray,
+) -> Tuple[np.ndarray, np.ndarray, StandardScaler]:
+   
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    return X_train_scaled, X_test_scaled, scaler
+
 def preprocess_pipeline(
     csv_path: Path | None = None,
     
@@ -89,6 +99,22 @@ def preprocess_pipeline(
     encoded_df, type_encoder = encode_product_type(cleaned_df)
 
     X, y, feature_names = prepare_features_and_target(encoded_df)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X.values,
+        y.values,
+        test_size=test_size,
+        random_state=random_seed,
+        stratify=y,
+    )
+
+    print(f"Train set: {len(X_train)} samples | Test set: {len(X_test)} samples")
+    print(f"Failure rate (train): {y_train.mean():.4f} | (test): {y_test.mean():.4f}")
+
+    # Scale features
+    X_train_scaled, X_test_scaled, scaler = scale_features(X_train, X_test)
+
+
 
 
     
