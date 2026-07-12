@@ -64,6 +64,17 @@ def encode_product_type(df: pd.DataFrame) -> Tuple[pd.DataFrame, LabelEncoder]:
     data[config.TYPE_COLUMN] = encoder.fit_transform(data[config.TYPE_COLUMN])
     return data, encoder
 
+def prepare_features_and_target(
+    df: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.Series, list[str]]:
+   
+    if config.TARGET_COLUMN not in df.columns:
+        raise ValueError(f"Target column '{config.TARGET_COLUMN}' not found.")
+
+    feature_names = [col for col in df.columns if col != config.TARGET_COLUMN]
+    X = df[feature_names]
+    y = df[config.TARGET_COLUMN]
+    return X, y, feature_names
 
 def preprocess_pipeline(
     csv_path: Path | None = None,
@@ -76,6 +87,8 @@ def preprocess_pipeline(
 
     cleaned_df = clean_dataset(raw_df)
     encoded_df, type_encoder = encode_product_type(cleaned_df)
+
+    X, y, feature_names = prepare_features_and_target(encoded_df)
 
 
     
