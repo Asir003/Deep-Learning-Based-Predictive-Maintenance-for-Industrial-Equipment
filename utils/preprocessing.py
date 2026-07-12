@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader, TensorDataset
 
 import config
 
+@dataclass
 class PreprocessedData:
 
     train_loader: DataLoader
