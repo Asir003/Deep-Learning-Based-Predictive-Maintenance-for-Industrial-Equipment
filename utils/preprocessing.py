@@ -168,6 +168,32 @@ def preprocess_pipeline(
     )
 
 
+def save_preprocessing_artifacts(
+    scaler: StandardScaler,
+    type_encoder: LabelEncoder,
+    feature_names: list[str],
+) -> None:
+    
+    config.SAVED_MODEL_DIR.mkdir(parents=True, exist_ok=True)
+    joblib.dump(scaler, config.SCALER_PATH)
+    joblib.dump(type_encoder, config.ENCODER_PATH)
+    joblib.dump(feature_names, config.FEATURE_NAMES_PATH)
+    print(f"Preprocessing artifacts saved to '{config.SAVED_MODEL_DIR}'.")
+
+
+def load_preprocessing_artifacts() -> Tuple[StandardScaler, LabelEncoder, list[str]]:
+    
+    for path in [config.SCALER_PATH, config.ENCODER_PATH, config.FEATURE_NAMES_PATH]:
+        if not path.exists():
+            raise FileNotFoundError(
+                f"Preprocessing artifact not found: '{path}'. "
+                "Please run train.py first."
+            )
+
+    scaler = joblib.load(config.SCALER_PATH)
+    type_encoder = joblib.load(config.ENCODER_PATH)
+    feature_names = joblib.load(config.FEATURE_NAMES_PATH)
+    return scaler, type_encoder, feature_names
 
 
 
