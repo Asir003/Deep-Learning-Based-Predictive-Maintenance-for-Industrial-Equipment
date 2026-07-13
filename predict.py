@@ -97,7 +97,7 @@ def main() -> None:
 
             
             label, probability = predict_failure(
-                model, raw_features, scaler, feature_names
+                model, raw_features, scaler
             )
 
             

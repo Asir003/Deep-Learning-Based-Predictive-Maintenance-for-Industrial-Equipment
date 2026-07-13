@@ -6,7 +6,7 @@ import torch.optim as optim
 
 import config
 from models.model import PredictiveMaintenanceNet
-from utils.preprocessing import preprocess_pipeline
+from utils.preprocessing import preprocess_pipeline,save_preprocessing_artifacts
 from utils.train_utils import (
     EarlyStopping,
     TrainingHistory,
@@ -40,6 +40,10 @@ def main() -> None:
         print(f"Input features: {data.input_size}")
         print(f"Feature names: {data.feature_names}")
         print()
+
+        save_preprocessing_artifacts(
+            data.scaler, data.type_encoder, data.feature_names
+        )
 
         print("Step 2: Building model...")
         model = PredictiveMaintenanceNet(
